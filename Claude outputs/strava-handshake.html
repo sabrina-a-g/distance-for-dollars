@@ -1,0 +1,383 @@
+<title>The Strava Handshake</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&family=Special+Gothic&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#1b1f1a;
+    --paper:#f7f5ef;
+    --surface:#ffffff;
+    --line:#ddd9cc;
+    --muted:#6f6d61;
+    --c-browser:#2f6690;
+    --c-server:#56721c;
+    --c-strava:#e04502;
+    --danger:#a3341f;
+    --danger-wash:#a3341f14;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eeece2;
+      --paper:#14150f;
+      --surface:#1c1e16;
+      --line:#34362a;
+      --muted:#a5a293;
+      --c-browser:#74aad8;
+      --c-server:#a3c968;
+      --c-strava:#ff7d47;
+      --danger:#e2695a;
+      --danger-wash:#e2695a1f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#eeece2;
+    --paper:#14150f;
+    --surface:#1c1e16;
+    --line:#34362a;
+    --muted:#a5a293;
+    --c-browser:#74aad8;
+    --c-server:#a3c968;
+    --c-strava:#ff7d47;
+    --danger:#e2695a;
+    --danger-wash:#e2695a1f;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', system-ui, sans-serif;
+    padding:0 20px;
+    padding-block:56px;
+  }
+  .page{ max-width:860px; margin:0 auto; }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 14px;
+  }
+  h1{
+    font-family:'Special Gothic Expanded One', system-ui, sans-serif;
+    font-weight:400;
+    font-size:clamp(32px,5vw,46px);
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    text-wrap:balance;
+    color:var(--ink);
+    margin:0 0 20px;
+  }
+  h2{
+    font-family:'Special Gothic', system-ui, sans-serif;
+    font-weight:400;
+    font-size:24px;
+    letter-spacing:-0.01em;
+    text-wrap:balance;
+    color:var(--ink);
+    margin:0 0 10px;
+  }
+  .lede, p{
+    font-size:16px;
+    line-height:1.65;
+    color:var(--ink);
+    max-width:65ch;
+  }
+  .lede{ font-size:17.5px; color:var(--muted); }
+  .muted{ color:var(--muted); }
+  code, .mono{ font-family:'JetBrains Mono', monospace; }
+
+  header{ margin-bottom:44px; padding-bottom:28px; border-bottom:1px solid var(--line); }
+
+  section{ margin:52px 0; }
+  section > p{ margin-bottom:18px; }
+
+  .diagram-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px 22px 16px;
+    margin:0;
+  }
+  .diagram-scroll{ overflow-x:auto; }
+  .diagram-scroll svg{ display:block; width:100%; height:auto; }
+  figure{ margin:0; }
+  figcaption{
+    margin-top:14px;
+    font-size:14px;
+    line-height:1.6;
+    color:var(--muted);
+    max-width:70ch;
+  }
+  figcaption strong{ color:var(--ink); font-weight:600; }
+
+  .callout{
+    padding:20px 22px;
+    margin:22px 0;
+  }
+  .callout h3{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    margin:0 0 10px;
+    font-weight:600;
+  }
+  .callout p{ margin:0; font-size:15px; }
+  .callout--warn{
+    background:var(--danger-wash);
+    border:1px solid var(--danger);
+  }
+  .callout--warn h3{ color:var(--danger); }
+  .callout--open{
+    background:var(--surface);
+    border:1.5px dashed var(--muted);
+  }
+  .callout--open h3{ color:var(--muted); }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14.5px;
+  }
+  caption{
+    text-align:left;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:10px;
+  }
+  th{
+    text-align:left;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:600;
+    padding:0 14px 10px 0;
+    border-bottom:1px solid var(--line);
+  }
+  td{
+    padding:14px 14px 14px 0;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+    line-height:1.55;
+  }
+  td.thing{ font-family:'JetBrains Mono', monospace; font-size:13.5px; white-space:nowrap; color:var(--ink); font-weight:600; }
+  .table-scroll{ overflow-x:auto; }
+  .table-scroll table{ min-width:560px; }
+  .table-note{ font-size:13px; color:var(--muted); margin-top:12px; }
+
+  footer{
+    margin-top:60px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.6;
+  }
+  footer a{ color:var(--muted); }
+
+  .lane-line{ stroke:var(--line); stroke-width:1.5; stroke-dasharray:3 4; }
+  .arrow{ stroke:var(--ink); stroke-width:2; fill:none; }
+  .arrow--danger{ stroke:var(--danger); }
+  .arrow-label{ font-family:'JetBrains Mono', monospace; font-size:12px; fill:var(--ink); text-anchor:middle; }
+  .arrow-label--danger{ fill:var(--danger); }
+  .halo{ fill:var(--surface); }
+  .lane-title{ font-family:'Special Gothic', system-ui, sans-serif; font-size:15px; font-weight:400; fill:var(--ink); text-anchor:middle; }
+  .lane-sub{ font-family:'JetBrains Mono', monospace; font-size:10px; fill:var(--muted); text-anchor:middle; }
+</style>
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">D4D-16 · reference diagram</p>
+    <h1>The Strava Handshake</h1>
+    <p class="lede">How DistanceForDollars, your browser, and Strava pass a token around so the app can read your activities without ever touching your Strava password. Built together while we scope the OAuth work &mdash; the open pieces at the bottom are still genuinely open.</p>
+  </header>
+
+  <section>
+    <h2>Connecting an account (happens once)</h2>
+    <p>This is the part that needs a human in the loop &mdash; someone clicking &ldquo;Connect Strava&rdquo; and approving on Strava&rsquo;s own site. It ends with D4D holding two tokens it didn&rsquo;t have before.</p>
+
+    <div class="diagram-card">
+      <div class="diagram-scroll">
+        <svg viewBox="0 0 840 700" style="min-width:720px" role="img" aria-label="Sequence diagram of the nine-step Strava OAuth authorization code handshake between the browser, the D4D server, and Strava">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 Z" fill="var(--ink)"/>
+            </marker>
+            <marker id="arrow-danger" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 Z" fill="var(--danger)"/>
+            </marker>
+          </defs>
+
+          <!-- lane headers -->
+          <rect x="45" y="8" width="190" height="46" rx="8" fill="var(--surface)" stroke="var(--c-browser)" stroke-width="2"/>
+          <text x="140" y="29" class="lane-title">Browser</text>
+          <text x="140" y="45" class="lane-sub">you, in the tab</text>
+
+          <rect x="325" y="8" width="190" height="46" rx="8" fill="var(--surface)" stroke="var(--c-server)" stroke-width="2"/>
+          <text x="420" y="29" class="lane-title">D4D Server</text>
+          <text x="420" y="45" class="lane-sub">next.js api routes</text>
+
+          <rect x="605" y="8" width="190" height="46" rx="8" fill="var(--surface)" stroke="var(--c-strava)" stroke-width="2"/>
+          <text x="700" y="29" class="lane-title">Strava</text>
+          <text x="700" y="45" class="lane-sub">oauth + api</text>
+
+          <!-- lifelines -->
+          <line x1="140" y1="56" x2="140" y2="668" class="lane-line"/>
+          <line x1="420" y1="56" x2="420" y2="668" class="lane-line"/>
+          <line x1="700" y1="56" x2="700" y2="668" class="lane-line"/>
+
+          <!-- 1: browser -> server -->
+          <line x1="140" y1="112" x2="420" y2="112" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="205" y="87" width="150" height="18" rx="3"/>
+          <text x="280" y="100" class="arrow-label">1 &middot; connect strava</text>
+
+          <!-- 2: server -> browser -->
+          <line x1="420" y1="176" x2="140" y2="176" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="185" y="151" width="190" height="18" rx="3"/>
+          <text x="280" y="164" class="arrow-label">2 &middot; redirect &rarr; authorize</text>
+
+          <!-- 3: browser -> strava -->
+          <line x1="140" y1="240" x2="700" y2="240" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="325" y="215" width="190" height="18" rx="3"/>
+          <text x="420" y="228" class="arrow-label">3 &middot; GET /oauth/authorize</text>
+
+          <!-- 4: strava -> browser -->
+          <line x1="700" y1="304" x2="140" y2="304" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="335" y="279" width="170" height="18" rx="3"/>
+          <text x="420" y="292" class="arrow-label">4 &middot; approve &rarr; code</text>
+
+          <!-- 5: browser -> server -->
+          <line x1="140" y1="368" x2="420" y2="368" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="200" y="343" width="160" height="18" rx="3"/>
+          <text x="280" y="356" class="arrow-label">5 &middot; GET /callback</text>
+
+          <!-- 6: server -> strava (secret used) -->
+          <line x1="420" y1="432" x2="700" y2="432" class="arrow arrow--danger" marker-end="url(#arrow-danger)"/>
+          <rect class="halo" x="465" y="407" width="190" height="18" rx="3"/>
+          <text x="560" y="420" class="arrow-label arrow-label--danger">6 &middot; POST /oauth/token</text>
+
+          <!-- 7: strava -> server -->
+          <line x1="700" y1="496" x2="420" y2="496" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="475" y="471" width="170" height="18" rx="3"/>
+          <text x="560" y="484" class="arrow-label">7 &middot; tokens returned</text>
+
+          <!-- 8: self loop on server -->
+          <path d="M420,556 H482 V584 H420" class="arrow" marker-end="url(#arrow)" fill="none"/>
+          <text x="495" y="574" class="arrow-label" text-anchor="start">8 &middot; save tokens</text>
+
+          <!-- 9: server -> browser -->
+          <line x1="420" y1="636" x2="140" y2="636" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="185" y="611" width="190" height="18" rx="3"/>
+          <text x="280" y="624" class="arrow-label">9 &middot; redirect &rarr; dashboard</text>
+        </svg>
+      </div>
+      <figcaption>
+        Nine hops from clicking Connect to D4D holding a usable token. Step 3&rsquo;s request also carries <code>client_id</code>, <code>redirect_uri</code>, <code>response_type=code</code> and a <code>scope</code> &mdash; all fine for the browser to see. <strong>Step 6 is the only hop that uses the Client Secret</strong>, and it happens entirely server&ndash;to&ndash;server; the browser is never part of that exchange.
+      </figcaption>
+    </div>
+  </section>
+
+  <section>
+    <h2>Staying connected (every 6 hours, forever)</h2>
+    <p>Once D4D has a refresh token, it never has to ask you to reconnect. This half runs on a timer, quietly, in the background &mdash; notice who&rsquo;s missing from it.</p>
+
+    <div class="diagram-card">
+      <div class="diagram-scroll">
+        <svg viewBox="0 0 760 300" style="min-width:620px" role="img" aria-label="Sequence diagram of the Strava token refresh cycle, showing only the D4D server and Strava, with no browser involved">
+          <path d="M270,246 L150,246 L150,96 L270,96" class="arrow" marker-end="url(#arrow)" fill="none"/>
+          <text x="145" y="170" class="arrow-label" text-anchor="middle" transform="rotate(-90 145 170)">repeats</text>
+
+          <rect x="175" y="8" width="190" height="46" rx="8" fill="var(--surface)" stroke="var(--c-server)" stroke-width="2"/>
+          <text x="270" y="29" class="lane-title">D4D Server</text>
+          <text x="270" y="45" class="lane-sub">next.js api routes</text>
+
+          <rect x="535" y="8" width="190" height="46" rx="8" fill="var(--surface)" stroke="var(--c-strava)" stroke-width="2"/>
+          <text x="630" y="29" class="lane-title">Strava</text>
+          <text x="630" y="45" class="lane-sub">oauth + api</text>
+
+          <line x1="270" y1="56" x2="270" y2="260" class="lane-line"/>
+          <line x1="630" y1="56" x2="630" y2="260" class="lane-line"/>
+
+          <line x1="270" y1="110" x2="630" y2="110" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="365" y="85" width="170" height="18" rx="3"/>
+          <text x="450" y="98" class="arrow-label">1 &middot; refresh expired token</text>
+
+          <line x1="630" y1="170" x2="270" y2="170" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="385" y="145" width="130" height="18" rx="3"/>
+          <text x="450" y="158" class="arrow-label">2 &middot; new tokens</text>
+
+          <path d="M270,210 H332 V236 H270" class="arrow" marker-end="url(#arrow)" fill="none"/>
+          <text x="345" y="228" class="arrow-label" text-anchor="start">3 &middot; update store</text>
+        </svg>
+      </div>
+      <figcaption>
+        <strong>No Browser lane here on purpose.</strong> Refreshing a token is a private conversation between your server and Strava&rsquo;s &mdash; it runs because access tokens expire every 6 hours, not because anyone opened a page.
+      </figcaption>
+    </div>
+
+    <div class="callout callout--warn">
+      <h3>The gotcha</h3>
+      <p>Strava hands back a brand-new <code class="mono">refresh_token</code> on every single refresh, and the old one stops working immediately. If D4D-16 stores the token once and never overwrites it, the connection will quietly break the first time it refreshes &mdash; hours after anyone actually tested it. Whatever storage we land on has to overwrite on every refresh, not just on first connect.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>What lives where</h2>
+    <div class="table-scroll">
+      <table>
+        <caption>Five things, five very different lifetimes</caption>
+        <thead>
+          <tr><th>Thing</th><th>Where it lives</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="thing">Client ID</td>
+            <td>anywhere in the app, plain env var</td>
+            <td>Public &mdash; identifies D4D to Strava. Fine to expose.</td>
+          </tr>
+          <tr>
+            <td class="thing">Client Secret</td>
+            <td><code>.env.local</code>, server-side only</td>
+            <td>Gitignored, never sent to the browser. Used only in steps&nbsp;6 and the refresh call.</td>
+          </tr>
+          <tr>
+            <td class="thing">Authorization code</td>
+            <td>the callback URL&rsquo;s <code>?code=</code></td>
+            <td>Single-use, worthless the moment it&rsquo;s exchanged.</td>
+          </tr>
+          <tr>
+            <td class="thing">Access token</td>
+            <td>wherever we store tokens</td>
+            <td>Sent as an <code>Authorization: Bearer</code> header. Expires in 6&nbsp;hours.</td>
+          </tr>
+          <tr>
+            <td class="thing">Refresh token</td>
+            <td>wherever we store tokens</td>
+            <td>The thing D4D-16 actually needs to persist. Strava replaces it every time it&rsquo;s used.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note">Full parameter and endpoint list: <span class="mono">developers.strava.com/docs/authentication</span></p>
+  </section>
+
+  <section>
+    <div class="callout callout--open">
+      <h3>Still deciding</h3>
+      <p>Both diagrams above just say &ldquo;save tokens&rdquo; and &ldquo;update store&rdquo; without saying where. Real options on the table: an encrypted, httpOnly cookie (works today, no new infrastructure); a local SQLite file just for development; or treating this ticket as &ldquo;get the handshake working end to end&rdquo; and punting real persistence to whenever RUNFUND-26&rsquo;s Postgres exists. Whichever we pick, it should live behind one small function &mdash; something like <code class="mono">getStravaTokens()</code> / <code class="mono">saveStravaTokens()</code> &mdash; so swapping the storage later doesn&rsquo;t mean touching every route that needs a token.</p>
+    </div>
+  </section>
+
+  <footer>
+    Endpoint paths and token lifetimes confirmed against Strava&rsquo;s own developer docs (developers.strava.com/docs/authentication), September 2026. Living reference for D4D-16 &mdash; update it as decisions land.
+  </footer>
+
+</div>

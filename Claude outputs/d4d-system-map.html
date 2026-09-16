@@ -1,0 +1,228 @@
+<title>The D4D System Map</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&family=Special+Gothic&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#1b1f1a;
+    --paper:#f7f5ef;
+    --surface:#ffffff;
+    --line:#ddd9cc;
+    --muted:#6f6d61;
+    --c-server:#56721c;
+    --c-strava:#e04502;
+    --danger:#a3341f;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eeece2; --paper:#14150f; --surface:#1c1e16; --line:#34362a; --muted:#a5a293;
+      --c-server:#a3c968; --c-strava:#ff7d47; --danger:#e2695a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#eeece2; --paper:#14150f; --surface:#1c1e16; --line:#34362a; --muted:#a5a293;
+    --c-server:#a3c968; --c-strava:#ff7d47; --danger:#e2695a;
+  }
+
+  *{ box-sizing:border-box; }
+  body{ background:var(--paper); color:var(--ink); font-family:'Public Sans', system-ui, sans-serif; padding:0 20px; padding-block:56px; }
+  .page{ max-width:920px; margin:0 auto; }
+
+  .eyebrow{ font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin:0 0 14px; }
+  h1{ font-family:'Special Gothic Expanded One', system-ui, sans-serif; font-weight:400; font-size:clamp(30px,5vw,44px); line-height:1.05; letter-spacing:-0.01em; text-wrap:balance; margin:0 0 20px; }
+  h2{ font-family:'Special Gothic', system-ui, sans-serif; font-weight:400; font-size:23px; letter-spacing:-0.01em; text-wrap:balance; margin:0 0 10px; }
+  p{ font-size:16px; line-height:1.65; max-width:66ch; }
+  .lede{ font-size:17.5px; color:var(--muted); }
+  code, .mono{ font-family:'JetBrains Mono', monospace; }
+
+  header{ margin-bottom:40px; padding-bottom:26px; border-bottom:1px solid var(--line); }
+  section{ margin:48px 0; }
+  section > p{ margin-bottom:16px; }
+
+  .diagram-card{ background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:22px 22px 16px; }
+  .diagram-scroll{ overflow-x:auto; }
+  .diagram-scroll svg{ display:block; width:100%; height:auto; }
+  figure{ margin:0; }
+  figcaption{ margin-top:14px; font-size:14px; line-height:1.6; color:var(--muted); max-width:72ch; }
+  figcaption strong{ color:var(--ink); font-weight:600; }
+
+  footer{ margin-top:56px; padding-top:20px; border-top:1px solid var(--line); font-size:13px; color:var(--muted); line-height:1.6; }
+
+  .lane-line{ stroke:var(--muted); stroke-width:1.5; stroke-dasharray:5 4; fill:none; }
+  .arrow{ stroke:var(--ink); stroke-width:2; fill:none; }
+  .arrow-label{ font-family:'JetBrains Mono', monospace; font-size:11.5px; fill:var(--ink); text-anchor:middle; }
+  .halo{ fill:var(--surface); }
+  .box-title{ font-family:'Special Gothic', system-ui, sans-serif; font-size:14px; fill:var(--ink); text-anchor:middle; }
+  .box-sub{ font-family:'JetBrains Mono', monospace; font-size:9.5px; fill:var(--muted); text-anchor:middle; }
+  .region-label{ font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.04em; fill:var(--muted); }
+
+  .status-built{ stroke:var(--ink); stroke-width:2; fill:var(--surface); }
+  .status-progress{ stroke:var(--c-server); stroke-width:2.5; fill:var(--surface); }
+  .status-planned{ stroke:var(--muted); stroke-width:1.5; stroke-dasharray:4 3; fill:var(--surface); fill-opacity:0.55; }
+  .neutral-box{ stroke:var(--line); stroke-width:1.5; fill:var(--surface); }
+
+  .legend-swatch{ rx:5; }
+  .legend-text{ font-family:'Public Sans', sans-serif; font-size:12px; fill:var(--ink); }
+</style>
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">distancefordollars &middot; architecture</p>
+    <h1>The D4D System Map</h1>
+    <p class="lede">Not just the Strava piece &mdash; the whole thing. How a request travels from a browser to the database and back, how code actually ships, and how we&rsquo;ll find out something broke before a user does.</p>
+  </header>
+
+  <section>
+    <div class="diagram-card">
+      <div class="diagram-scroll">
+        <svg viewBox="0 0 1120 900" style="min-width:960px" role="img" aria-label="Architecture diagram of the DistanceForDollars system: a browser reaching a Next.js app on a k3s cluster on EC2, backed by Postgres and Strava, deployed via GitHub Actions and ECR, watched by Prometheus, Grafana, Sentry and UptimeRobot. Boxes are styled by build status: solid border for built, olive border for in progress, dashed for planned.">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 Z" fill="var(--ink)"/>
+            </marker>
+          </defs>
+
+          <!-- CI/CD band -->
+          <text x="40" y="28" class="region-label">SHIP IT</text>
+          <rect x="40" y="40" width="150" height="60" rx="8" class="status-built"/>
+          <text x="115" y="65" class="box-title">GitHub</text>
+          <text x="115" y="82" class="box-sub">charity-strava repo</text>
+
+          <rect x="250" y="40" width="170" height="60" rx="8" class="status-planned"/>
+          <text x="335" y="65" class="box-title">GitHub Actions</text>
+          <text x="335" y="82" class="box-sub">build + test &middot; D4D-24</text>
+
+          <rect x="480" y="40" width="140" height="60" rx="8" class="status-planned"/>
+          <text x="550" y="65" class="box-title">ECR</text>
+          <text x="550" y="82" class="box-sub">image registry &middot; D4D-21</text>
+
+          <line x1="190" y1="70" x2="250" y2="70" class="arrow" marker-end="url(#arrow)"/>
+          <line x1="420" y1="70" x2="480" y2="70" class="arrow" marker-end="url(#arrow)"/>
+          <line x1="550" y1="100" x2="580" y2="235" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="545" y="150" width="110" height="17" rx="3"/>
+          <text x="600" y="163" class="arrow-label">helm deploy</text>
+
+          <!-- Browser -->
+          <rect x="40" y="255" width="160" height="64" rx="8" class="neutral-box"/>
+          <text x="120" y="280" class="box-title">Browser</text>
+          <text x="120" y="297" class="box-sub">any user</text>
+
+          <line x1="200" y1="287" x2="250" y2="287" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="130" y="228" width="180" height="17" rx="3"/>
+          <text x="220" y="241" class="arrow-label">DNS &rarr; Elastic IP &middot; D4D-37</text>
+
+          <!-- AWS region -->
+          <rect x="250" y="190" width="630" height="530" rx="12" class="lane-line"/>
+          <text x="270" y="214" class="region-label">AWS &middot; EC2 INSTANCE &mdash; D4D-21</text>
+
+          <rect x="270" y="235" width="590" height="450" rx="10" style="stroke:var(--c-server);stroke-width:1.5;stroke-dasharray:4 3;fill:none"/>
+          <text x="288" y="257" class="region-label" style="fill:var(--c-server)">K3S CLUSTER &mdash; D4D-22</text>
+
+          <rect x="300" y="275" width="220" height="56" rx="8" class="status-planned"/>
+          <text x="410" y="298" class="box-title">Ingress</text>
+          <text x="410" y="315" class="box-sub">cert-manager + TLS &middot; D4D-25</text>
+
+          <line x1="410" y1="331" x2="410" y2="363" class="arrow" marker-end="url(#arrow)"/>
+
+          <!-- D4D App -->
+          <rect x="300" y="365" width="510" height="190" rx="10" class="status-built"/>
+          <text x="555" y="388" class="box-title" style="font-size:15px">D4D App &mdash; Next.js</text>
+          <text x="555" y="404" class="box-sub">docker image, built &middot; D4D-15</text>
+
+          <rect x="315" y="418" width="86" height="46" rx="6" class="status-progress"/>
+          <text x="358" y="438" class="box-title" style="font-size:11px">OAuth</text>
+          <text x="358" y="452" class="box-sub">D4D-16</text>
+
+          <rect x="411" y="418" width="86" height="46" rx="6" class="status-planned"/>
+          <text x="454" y="438" class="box-title" style="font-size:11px">Pledges</text>
+          <text x="454" y="452" class="box-sub">D4D-17</text>
+
+          <rect x="507" y="418" width="86" height="46" rx="6" class="status-planned"/>
+          <text x="550" y="438" class="box-title" style="font-size:11px">Sync job</text>
+          <text x="550" y="452" class="box-sub">D4D-18</text>
+
+          <rect x="603" y="418" width="86" height="46" rx="6" class="status-planned"/>
+          <text x="646" y="438" class="box-title" style="font-size:11px">Dashboard</text>
+          <text x="646" y="452" class="box-sub">D4D-19</text>
+
+          <rect x="699" y="418" width="86" height="46" rx="6" class="status-planned"/>
+          <text x="742" y="438" class="box-title" style="font-size:11px">Year-end</text>
+          <text x="742" y="452" class="box-sub">D4D-20</text>
+
+          <line x1="410" y1="555" x2="410" y2="588" class="arrow" marker-end="url(#arrow)"/>
+
+          <rect x="300" y="590" width="230" height="64" rx="8" class="status-planned"/>
+          <text x="415" y="615" class="box-title">Postgres</text>
+          <text x="415" y="632" class="box-sub">StatefulSet + PVC &middot; D4D-26</text>
+
+          <!-- Strava -->
+          <rect x="960" y="390" width="130" height="70" rx="8" class="neutral-box"/>
+          <text x="1025" y="416" class="box-title">Strava</text>
+          <text x="1025" y="433" class="box-sub">oauth + activities</text>
+
+          <line x1="810" y1="425" x2="960" y2="420" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="825" y="393" width="115" height="17" rx="3"/>
+          <text x="882" y="406" class="arrow-label">see: Strava Handshake</text>
+
+          <!-- S3 -->
+          <rect x="960" y="592" width="130" height="60" rx="8" class="neutral-box"/>
+          <text x="1025" y="617" class="box-title">S3</text>
+          <text x="1025" y="634" class="box-sub">nightly backup</text>
+
+          <line x1="530" y1="618" x2="960" y2="612" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="695" y="591" width="100" height="17" rx="3"/>
+          <text x="745" y="604" class="arrow-label">backup &middot; D4D-26</text>
+
+          <!-- Observability -->
+          <rect x="280" y="800" width="210" height="60" rx="8" class="status-planned"/>
+          <text x="385" y="825" class="box-title">Prometheus + Grafana</text>
+          <text x="385" y="842" class="box-sub">metrics &middot; D4D-27</text>
+
+          <rect x="530" y="800" width="170" height="60" rx="8" class="status-planned"/>
+          <text x="615" y="825" class="box-title">Sentry</text>
+          <text x="615" y="842" class="box-sub">errors &middot; D4D-28</text>
+
+          <rect x="740" y="800" width="190" height="60" rx="8" class="status-planned"/>
+          <text x="835" y="825" class="box-title">UptimeRobot</text>
+          <text x="835" y="842" class="box-sub">uptime ping &middot; D4D-29</text>
+
+          <line x1="390" y1="685" x2="390" y2="798" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="335" y="735" width="110" height="17" rx="3"/>
+          <text x="390" y="748" class="arrow-label">scrapes metrics</text>
+
+          <line x1="650" y1="555" x2="620" y2="798" class="arrow" marker-end="url(#arrow)"/>
+          <rect class="halo" x="565" y="672" width="150" height="17" rx="3"/>
+          <text x="640" y="685" class="arrow-label">errors &middot; D4D-30</text>
+
+          <path d="M835,798 L835,300 L520,300" class="arrow" marker-end="url(#arrow)" fill="none"/>
+          <rect class="halo" x="595" y="285" width="100" height="17" rx="3"/>
+          <text x="645" y="298" class="arrow-label">uptime ping</text>
+
+          <!-- legend -->
+          <rect x="40" y="795" width="210" height="95" rx="8" class="neutral-box"/>
+          <rect x="55" y="812" width="22" height="14" rx="3" class="status-built"/>
+          <text x="85" y="823" class="legend-text">built</text>
+          <rect x="55" y="837" width="22" height="14" rx="3" class="status-progress"/>
+          <text x="85" y="848" class="legend-text">in progress</text>
+          <rect x="55" y="862" width="22" height="14" rx="3" class="status-planned"/>
+          <text x="85" y="873" class="legend-text">planned</text>
+        </svg>
+      </div>
+      <figcaption>
+        Border style tracks real Jira status, not just architecture: <strong>solid</strong> is built, <strong>olive</strong> is in progress, <strong>dashed</strong> is still just a box on this page. Everything downstream of the app shell &mdash; the cluster, the database, the whole ship-it pipeline, all three monitoring tools &mdash; is dashed right now.
+      </figcaption>
+    </div>
+  </section>
+
+  <section>
+    <h2>Three ways to read this</h2>
+    <p><strong>Follow the request:</strong> browser &rarr; DNS &rarr; Ingress &rarr; the app &rarr; Postgres, with a side trip out to Strava whenever the app needs to read or refresh activity data. That side trip is its own nine-step handshake, mapped separately in the Strava Handshake reference &mdash; this map only draws it as one arrow.</p>
+    <p><strong>Follow the code:</strong> a push to GitHub triggers Actions, which builds the image, pushes it to ECR, and Helm rolls it out to the k3s cluster already running on the EC2 box. None of that exists yet; right now shipping means building and running the Docker image by hand.</p>
+    <p><strong>Follow the alarm:</strong> Prometheus and Grafana watch the cluster itself, Sentry catches errors from inside the app, and UptimeRobot pings the public URL from the outside. The Sentry arrow is labeled with D4D-30 on purpose &mdash; alerting on a failed Strava sync matters more than generic errors, because we already know token refresh is the part most likely to quietly break.</p>
+  </section>
+
+  <footer>
+    Reflects Jira status as of today &mdash; a living map, not a spec. Companion reference: <span class="mono">The Strava Handshake</span> (zooms into the single arrow between D4D App and Strava above).
+  </footer>
+
+</div>
