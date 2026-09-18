@@ -1,11 +1,21 @@
+import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 
 
-function saveStravaTokens(tokens: unknown) {
-  // placeholder for now — swap this body out later,
-  // nothing else in this file should need to change when we do
-  console.log(tokens);
+function saveStravaTokens(tokens: any) {
+  const stmt = db.prepare(`
+    INSERT OR REPLACE INTO strava_tokens(athlete_id, access_token, refresh_token, expires_at, scope, updated_at)
+    VALUES(?, ?, ?, ?, ?, strftime('%s', 'now'));
+  `);
+  
+  stmt.run(
+    tokens.athlete.id,
+    tokens.access_token,
+    tokens.refresh_token,
+    tokens.expires_at,
+    tokens.scope
+  );
 }
 
 export async function GET(request: Request) {
