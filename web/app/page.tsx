@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import CharitySearch from "./components/charitysearch";
 
 // Colors: #56721c (olive dark), #698C22 (olive mid), #636B2F (olive),
 //         #B4C78E (light olive), #FFBF00 (amber), #007EFF (blue), #f8f8f4 (off-white)
@@ -117,7 +118,7 @@ export default function Page() {
 
   return (
     <div className="min-h-full bg-white text-[#1a1a18] overflow-x-hidden">
-
+      
       {/* ── NAV ── */}
       <nav className="sticky top-0 z-50 bg-white border-b border-black/8">
         <div className="max-w-6xl mx-auto px-5 lg:px-10 h-16 grid grid-cols-3 items-center gap-8">
