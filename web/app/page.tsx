@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import CharitySearch from "./components/charitysearch";
 
 // Colors: #56721c (olive dark), #698C22 (olive mid), #636B2F (olive),
 //         #B4C78E (light olive), #FFBF00 (amber), #007EFF (blue), #f8f8f4 (off-white)
