@@ -25,7 +25,7 @@ export async function GET() {
   })
 
   // this will prevent someone attempting to use a different redirect to access the strava auth code for D4D
-  const redirectUri = "http://localhost:3000/api/auth/strava/callback";
+  const redirectUri = "http://localhost:3000/api/auth/callback";
 
   const params = new URLSearchParams({
     client_id: stravaClientId,
