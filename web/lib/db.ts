@@ -33,3 +33,11 @@ db.exec(`
 
 // Combine with other paths using node:path
 console.log(`Resolved File Path: ${filePath}`);
+
+// this only works because there's a single connected athlete right now, and it'll need real session-based lookup once multiple users exist
+export function getStravaTokens() {
+  const stmt = db.prepare(`
+    SELECT * FROM strava_tokens LIMIT 1
+  `);
+  return stmt.get();
+}
