@@ -1,16 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 // Colors: #56721c (olive dark), #698C22 (olive mid), #636B2F (olive),
 //         #B4C78E (light olive), #FFBF00 (amber), #007EFF (blue), #f8f8f4 (off-white)
 
-const NAV_LINKS = [
-  { label: "How it Works", href: "#" },
-  { label: "Goals", href: "#" },
-  { label: "Charities", href: "#" },
-  { label: "Pricing", href: "#" },
-];
 
 const STEPS = [
   {
@@ -108,7 +103,6 @@ const TESTIMONIALS = [
 ];
 
 export default function Page() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pledgeAmount, setPledgeAmount] = useState(0.5);
   const [milesExample, setMilesExample] = useState(80);
 
@@ -117,51 +111,6 @@ export default function Page() {
 
   return (
     <div className="min-h-full bg-white text-[#1a1a18] overflow-x-hidden">
-
-      {/* ── NAV ── */}
-      <nav className="sticky top-0 z-50 bg-white border-b border-black/8">
-        <div className="max-w-6xl mx-auto px-5 lg:px-10 h-16 grid grid-cols-3 items-center gap-8">
-          {/* Logo */}
-          <a href="#" className="flex items-center gap-2 justify-self-start">
-            <span className="w-7 h-7 rounded-full bg-[#56721c] flex items-center justify-center">
-              <span className="text-[#B4C78E] text-[10px] font-bold font-mono-data">DFD</span>
-            </span>
-            <span className="font-display font-600 text-base tracking-tight text-[#56721c]">DistanceForDollars</span>
-          </a>
-
-          {/* Center links */}
-          <div className="hidden md:flex items-center gap-6 justify-self-center">
-            {NAV_LINKS.map((l) => (
-              <a key={l.label} href={l.href} className="text-sm text-[#3d3d38] hover:text-[#56721c] transition-colors font-medium">
-                {l.label}
-              </a>
-            ))}
-          </div>
-
-          {/* Right CTAs */}
-          <div className="flex items-center gap-2 justify-self-end">
-            <a href="#" className="hidden md:block text-sm font-medium text-[#3d3d38] hover:text-[#56721c] px-3 py-2 transition-colors">
-              Log in
-            </a>
-            <a href="#" className="bg-[#56721c] text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-[#698C22] transition-colors">
-              Start going the distance
-            </a>
-            <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              <span className="block w-5 h-0.5 bg-[#1a1a18] mb-1"></span>
-              <span className="block w-5 h-0.5 bg-[#1a1a18] mb-1"></span>
-              <span className="block w-5 h-0.5 bg-[#1a1a18]"></span>
-            </button>
-          </div>
-        </div>
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-black/8 px-5 py-4 flex flex-col gap-3">
-            {NAV_LINKS.map((l) => (
-              <a key={l.label} href={l.href} className="text-sm text-[#3d3d38] font-medium py-1">{l.label}</a>
-            ))}
-            <a href="#" className="text-sm text-[#3d3d38] font-medium py-1">Log in</a>
-          </div>
-        )}
-      </nav>
 
       {/* ── HERO ── */}
       <section className="bg-white pt-16 pb-0">
@@ -183,12 +132,12 @@ export default function Page() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-14">
-            <a href="#" className="bg-[#FFBF00] text-[#1a1a18] font-bold text-base px-8 py-4 rounded-full hover:bg-[#e6b400] transition-colors">
+            <Link href="#" className="bg-[#FFBF00] text-[#1a1a18] font-bold text-base px-8 py-4 rounded-full hover:bg-[#e6b400] transition-colors">
               Start going the distance — it's free
-            </a>
-            <a href="#" className="border border-black/15 text-[#1a1a18] font-semibold text-base px-8 py-4 rounded-full hover:bg-[#f8f8f4] transition-colors">
+            </Link>
+            <Link href="#" className="border border-black/15 text-[#1a1a18] font-semibold text-base px-8 py-4 rounded-full hover:bg-[#f8f8f4] transition-colors">
               See how it works
-            </a>
+            </Link>
           </div>
 
           {/* Stat bar */}
@@ -279,9 +228,9 @@ export default function Page() {
               <p className="text-[#007EFF] text-xs font-mono-data font-medium tracking-widest mb-3">ACTIVE GOALS</p>
               <h2 className="font-display font-600 text-4xl md:text-5xl text-[#1a1a18]">See what members<br />are building toward.</h2>
             </div>
-            <a href="#" className="hidden md:block text-sm font-semibold text-[#56721c] hover:underline">
+            <Link href="#" className="hidden md:block text-sm font-semibold text-[#56721c] hover:underline">
               Browse all →
-            </a>
+            </Link>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -421,9 +370,9 @@ export default function Page() {
                   </div>
                 ))}
               </div>
-              <a href="#" className="inline-block bg-[#56721c] text-white font-semibold text-sm px-7 py-3.5 rounded-full hover:bg-[#698C22] transition-colors">
+              <Link href="#" className="inline-block bg-[#56721c] text-white font-semibold text-sm px-7 py-3.5 rounded-full hover:bg-[#698C22] transition-colors">
                 Make your move
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -441,9 +390,9 @@ export default function Page() {
                 <span className="text-[#FFBF00]">bigger</span>{" "} than yourself.
               </h2>
             </div>
-            <a href="#" className="hidden md:block text-sm font-semibold text-[#56721c] hover:underline">
+            <Link href="/charities" className="hidden md:block text-sm font-semibold text-[#56721c] hover:underline">
               Browse 40+ charities →
-            </a>
+            </Link>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -503,12 +452,12 @@ export default function Page() {
             Connect activity app, set your pledge in 2 minutes, and your next workout starts building toward your goal automatically.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href="#" className="bg-[#56721c] text-white px-8 py-4 rounded-full font-bold text-base hover:bg-[#698C22] transition-colors">
+            <Link href="#" className="bg-[#56721c] text-white px-8 py-4 rounded-full font-bold text-base hover:bg-[#698C22] transition-colors">
               Connect with activity app — free
-            </a>
-            <a href="#" className="bg-[#1a1a18] text-white border border-black/15 px-8 py-4 rounded-full font-semibold text-base hover:bg-[#1a1a18]/80 transition-colors">
+            </Link>
+            <Link href="#" className="bg-[#1a1a18] text-white border border-black/15 px-8 py-4 rounded-full font-semibold text-base hover:bg-[#1a1a18]/80 transition-colors">
               Learn more
-            </a>
+            </Link>
           </div>
           <p className="text-[#1a1a18]/40 text-xs mt-8">No credit card. No risk. Cancel anytime.</p>
         </div>
@@ -543,7 +492,7 @@ export default function Page() {
                 <p className="text-white font-semibold text-sm mb-4">{col.title}</p>
                 <ul className="space-y-2.5">
                   {col.links.map((l) => (
-                    <li key={l}><a href="#" className="text-sm hover:text-white transition-colors">{l}</a></li>
+                    <li key={l}><Link href="#" className="text-sm hover:text-white transition-colors">{l}</Link></li>
                   ))}
                 </ul>
               </div>
