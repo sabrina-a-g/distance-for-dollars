@@ -1,0 +1,17 @@
+// use prisma-8
+
+model User {
+  id          BigInt      @id
+  email       String      @unique
+  username    String?
+  name        String?
+}
+
+model SyncedActivity {
+  athleteId                       BigInt
+  activityId                      BigInt
+  startDate                       DateTime
+  distanceMeters                  Float
+  goalId                          Int?
+  @@id([athleteId, activityId])   
+}
