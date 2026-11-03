@@ -1,0 +1,62 @@
+[
+  {
+    "id": "column.public.SyncedActivity.sportType",
+    "label": "Add column \"sportType\" to \"SyncedActivity\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "sportType",
+        "table": "SyncedActivity"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"sportType\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "SyncedActivity",
+          "sportType"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"sportType\" on \"SyncedActivity\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"sportType\"",
+        "sql": "ALTER TABLE \"public\".\"SyncedActivity\" ADD COLUMN \"sportType\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"sportType\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "SyncedActivity",
+          "sportType"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"sportType\" on \"SyncedActivity\""
+        }
+      },
+      {
+        "description": "verify column \"sportType\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "SyncedActivity",
+          "sportType",
+          "text"
+        ]
+      }
+    ]
+  }
+]

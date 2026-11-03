@@ -47,6 +47,13 @@
                   "kind": "scalar"
                 }
               },
+              "sportType": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "startDate": {
                 "nullable": false,
                 "type": {
@@ -69,6 +76,9 @@
                 },
                 "goalId": {
                   "column": "goalId"
+                },
+                "sportType": {
+                  "column": "sportType"
                 },
                 "startDate": {
                   "column": "startDate"
@@ -160,6 +170,11 @@
                   "dataType": "pg/int4",
                   "nullable": true
                 },
+                "sportType": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
                 "startDate": {
                   "codecId": "pg/timestamptz-temporal@1",
                   "dataType": "pg/timestamptz",
@@ -220,7 +235,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "e54f8d57fd0940f8abad9c092851344d099569867cee2bf03dec245ee81ed31b"
+    "storageHash": "64053d9471ec86ff70d99fbf23a04960e0fd2d5abab0d1bdc4335029cb4d2b07"
   },
   "capabilities": {
     "postgres": {

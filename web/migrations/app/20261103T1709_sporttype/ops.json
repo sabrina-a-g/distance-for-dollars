@@ -1,0 +1,61 @@
+[
+  {
+    "id": "alterNullability.setNotNull.SyncedActivity.sportType",
+    "label": "Set NOT NULL on \"SyncedActivity\".\"sportType\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "sportType",
+        "table": "SyncedActivity"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"sportType\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "SyncedActivity",
+          "sportType"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"sportType\" on \"SyncedActivity\""
+        }
+      },
+      {
+        "description": "ensure no NULL values in \"sportType\"",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"public\".\"SyncedActivity\" WHERE \"sportType\" IS NULL) AS \"result\"",
+        "params": [],
+        "meta": {
+          "requiredColumn": {
+            "table": "SyncedActivity",
+            "column": "sportType",
+            "reason": "nullValues"
+          }
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "set NOT NULL on \"sportType\"",
+        "sql": "ALTER TABLE \"public\".\"SyncedActivity\" ALTER COLUMN \"sportType\" SET NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"sportType\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "SyncedActivity",
+          "sportType",
+          "NO"
+        ]
+      }
+    ]
+  }
+]
