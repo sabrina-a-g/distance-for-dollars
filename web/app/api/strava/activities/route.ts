@@ -54,6 +54,7 @@ export async function GET() {
   const convertedActivities = activities.map((activity) => ({
     athleteId: BigInt(activity.athlete.id),
     activityId: BigInt(activity.id),
+    sportType: activity.sport_type,
     //type mismatch between polyfill and Prisma’s Temporal types, revisit.
     startDate: Temporal.Instant.from(activity.start_date) as any,
     distanceMeters: activity.distance,

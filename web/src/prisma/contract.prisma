@@ -10,6 +10,7 @@ model User {
 model SyncedActivity {
   athleteId                       BigInt
   activityId                      BigInt
+  sportType                       String
   startDate                       DateTime
   distanceMeters                  Float
   goalId                          Int?

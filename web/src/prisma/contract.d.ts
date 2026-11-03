@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'e54f8d57fd0940f8abad9c092851344d099569867cee2bf03dec245ee81ed31b'>;
+  StorageHashBase<'64053d9471ec86ff70d99fbf23a04960e0fd2d5abab0d1bdc4335029cb4d2b07'>;
 export type ExecutionHash = ExecutionHashBase<string>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
@@ -274,6 +274,7 @@ export namespace Models {
     athleteId: FieldOutputTypes['public']['SyncedActivity']['athleteId'];
     distanceMeters: FieldOutputTypes['public']['SyncedActivity']['distanceMeters'];
     goalId: FieldOutputTypes['public']['SyncedActivity']['goalId'];
+    sportType: FieldOutputTypes['public']['SyncedActivity']['sportType'];
     startDate: FieldOutputTypes['public']['SyncedActivity']['startDate'];
     readonly [RelationKeys]?: never;
   };
@@ -335,6 +336,12 @@ type ContractBase = Omit<
                   readonly dataType: 'pg/int4';
                   readonly codecId: 'pg/int4@1';
                   readonly nullable: true;
+                  readonly many: false;
+                };
+                readonly sportType: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
                   readonly many: false;
                 };
                 readonly startDate: {
@@ -420,6 +427,10 @@ type ContractBase = Omit<
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
+              readonly sportType: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly startDate: {
                 readonly nullable: false;
                 readonly type: {
@@ -437,6 +448,7 @@ type ContractBase = Omit<
                 readonly athleteId: { readonly column: 'athleteId' };
                 readonly distanceMeters: { readonly column: 'distanceMeters' };
                 readonly goalId: { readonly column: 'goalId' };
+                readonly sportType: { readonly column: 'sportType' };
                 readonly startDate: { readonly column: 'startDate' };
               };
             };
