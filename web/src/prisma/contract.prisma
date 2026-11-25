@@ -1,18 +1,40 @@
 // use prisma-8
 
 model User {
-  id          BigInt      @id
-  email       String      @unique
-  username    String?
-  name        String?
+  id             BigInt                  @id
+  email          String                  @unique
+  username       String?
+  name           String?
 }
 
 model SyncedActivity {
-  athleteId                       BigInt
-  activityId                      BigInt
-  sportType                       String
-  startDate                       DateTime
-  distanceMeters                  Float
-  goalId                          Int?
+  athleteId      BigInt
+  activityId     BigInt
+  sportType      String
+  startDate      DateTime
+  distanceMeters Float
+  goalId         Int?
+  
   @@id([athleteId, activityId])   
 }
+
+model Goal {
+  goalId           Int                    @id @default(autoincrement())
+  athleteId        BigInt
+  goalType         String
+  createdDate      DateTime
+  startDate        DateTime
+  status           String
+  charityReference String?
+}
+
+model GoalRule {
+  goalId           Int                    
+  goal             Goal                   @relation(fields: [goalId], references: [goalId])
+  category         String
+  rate             Decimal
+  unit             String
+  
+  @@id([goalId, category])
+}
+
