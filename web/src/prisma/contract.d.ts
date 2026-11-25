@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'64053d9471ec86ff70d99fbf23a04960e0fd2d5abab0d1bdc4335029cb4d2b07'>;
+  StorageHashBase<'0b7beaa6f453a0ec674015b8df3361656fb72367be1bec6548fbb7be74d6c5d1'>;
 export type ExecutionHash = ExecutionHashBase<string>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
@@ -269,6 +269,24 @@ export type StorageColumnInputTypes = ColumnTypesFromStorage<
 >;
 
 export namespace Models {
+  export type public_Goal = {
+    athleteId: FieldOutputTypes['public']['Goal']['athleteId'];
+    charityReference: FieldOutputTypes['public']['Goal']['charityReference'];
+    createdDate: FieldOutputTypes['public']['Goal']['createdDate'];
+    goalId: FieldOutputTypes['public']['Goal']['goalId'];
+    goalType: FieldOutputTypes['public']['Goal']['goalType'];
+    startDate: FieldOutputTypes['public']['Goal']['startDate'];
+    status: FieldOutputTypes['public']['Goal']['status'];
+    readonly [RelationKeys]?: never;
+  };
+  export type public_GoalRule = {
+    category: FieldOutputTypes['public']['GoalRule']['category'];
+    goalId: FieldOutputTypes['public']['GoalRule']['goalId'];
+    rate: FieldOutputTypes['public']['GoalRule']['rate'];
+    unit: FieldOutputTypes['public']['GoalRule']['unit'];
+    goal: public_Goal;
+    readonly [RelationKeys]?: 'goal';
+  };
   export type public_SyncedActivity = {
     activityId: FieldOutputTypes['public']['SyncedActivity']['activityId'];
     athleteId: FieldOutputTypes['public']['SyncedActivity']['athleteId'];
@@ -289,6 +307,8 @@ export namespace Models {
 
 export declare const models: {
   public: {
+    Goal: Models.public_Goal;
+    GoalRule: Models.public_GoalRule;
     SyncedActivity: Models.public_SyncedActivity;
     User: Models.public_User;
   };
@@ -312,6 +332,112 @@ type ContractBase = Omit<
         readonly kind: 'postgres-schema';
         readonly entries: {
           readonly table: {
+            readonly Goal: {
+              columns: {
+                readonly athleteId: {
+                  readonly dataType: 'pg/int8';
+                  readonly codecId: 'pg/int8@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly charityReference: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                  readonly many: false;
+                };
+                readonly createdDate: {
+                  readonly dataType: 'pg/timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly goalId: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                  readonly many: false;
+                };
+                readonly goalType: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly startDate: {
+                  readonly dataType: 'pg/timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly status: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['goalId'] };
+              uniques: readonly [];
+              indexes: readonly [];
+              foreignKeys: readonly [];
+            };
+            readonly GoalRule: {
+              columns: {
+                readonly category: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly goalId: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly rate: {
+                  readonly dataType: 'pg/numeric';
+                  readonly codecId: 'pg/numeric@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly unit: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['goalId', 'category'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'GoalRule_goalId_idx_8733343e';
+                  readonly prefix: 'GoalRule_goalId_idx';
+                  readonly columns: readonly ['goalId'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'GoalRule';
+                    readonly columns: readonly ['goalId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'Goal';
+                    readonly columns: readonly ['goalId'];
+                  };
+                },
+              ];
+            };
             readonly SyncedActivity: {
               columns: {
                 readonly activityId: {
@@ -399,6 +525,8 @@ type ContractBase = Omit<
   readonly target: 'postgres';
   readonly targetFamily: 'sql';
   readonly roots: {
+    readonly Goal: { readonly namespace: 'public' & NamespaceId; readonly model: 'Goal' };
+    readonly GoalRule: { readonly namespace: 'public' & NamespaceId; readonly model: 'GoalRule' };
     readonly SyncedActivity: {
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'SyncedActivity';
@@ -409,6 +537,99 @@ type ContractBase = Omit<
     readonly namespaces: {
       readonly public: {
         readonly models: {
+          readonly Goal: {
+            readonly fields: {
+              readonly athleteId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int8@1' };
+              };
+              readonly charityReference: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdDate: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly goalId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly goalType: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly startDate: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+            };
+            readonly relations: Record<string, never>;
+            readonly storage: {
+              readonly table: 'Goal';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly athleteId: { readonly column: 'athleteId' };
+                readonly charityReference: { readonly column: 'charityReference' };
+                readonly createdDate: { readonly column: 'createdDate' };
+                readonly goalId: { readonly column: 'goalId' };
+                readonly goalType: { readonly column: 'goalType' };
+                readonly startDate: { readonly column: 'startDate' };
+                readonly status: { readonly column: 'status' };
+              };
+            };
+          };
+          readonly GoalRule: {
+            readonly fields: {
+              readonly category: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly goalId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly rate: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/numeric@1' };
+              };
+              readonly unit: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+            };
+            readonly relations: {
+              readonly goal: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'Goal' };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['goalId'];
+                  readonly targetFields: readonly ['goalId'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'GoalRule';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly category: { readonly column: 'category' };
+                readonly goalId: { readonly column: 'goalId' };
+                readonly rate: { readonly column: 'rate' };
+                readonly unit: { readonly column: 'unit' };
+              };
+            };
+          };
           readonly SyncedActivity: {
             readonly fields: {
               readonly activityId: {
